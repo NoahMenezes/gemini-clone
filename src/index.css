@@ -1,4 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sigmar&display=swap');
+
+
 *{
   padding: 0;
   margin: 0;
+}
+#root{
+  min-height: 100vh;
+  display: flex;
 }
