@@ -9,89 +9,109 @@
 }
 
 /* --- Main Sidebar Container --- */
+/* --- Main Sidebar Container --- */
 .sidebar {
     min-height: 100vh;
-    width: 250px; /* Set an explicit width for expansion */
+    width: 250px;
     display: inline-flex;
     flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--sidebar-bg);
+    justify-content: space-between; /* Pushes bottom items down */
+    background-color: var(--sidebar-bg-color);
     padding: 25px 15px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-    /* Transition the width for a smooth collapse/expand animation */
-    transition: width var(--transition-speed) ease;
+    transition: width 0.3s ease;
 }
 
 /* --- Collapsed State --- */
 .sidebar.collapsed {
-    width: 80px; /* Width when collapsed */
+    width: 80px;
+}
+
+/* --- Sections --- */
+.sidebar .top, .sidebar .bottom {
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- General Image Styles --- */
 .sidebar img {
-    width: 25px; /* Slightly larger for better visibility */
+    width: 25px; /* Default size for icons */
 }
 
-/* --- Interactive Items & Hover Effects --- */
-.sidebar .menu, .sidebar .new-chat, .sidebar .sidebar-item {
-    cursor: pointer;
-    transition: background-color var(--transition-speed) ease;
-}
 
+/* ################################### */
+/* ##########  THE FIX  ########## */
+/* ################################### */
+
+/* --- UPDATED Menu Icon --- */
 .sidebar .menu {
-    display: block;
-    margin-left: 10px;
-    padding: 5px;
+    width: 30px; /* Specific width for the menu icon */
+    padding: 12px; /* Creates a larger clickable area */
+    margin-bottom: 50px;
     border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.sidebar .menu:hover, .sidebar .new-chat:hover, .sidebar .sidebar-item:hover {
-    background-color: var(--sidebar-item-hover-bg);
-}
 
 /* --- New Chat Button --- */
 .sidebar .new-chat {
-    margin-top: 50px;
     display: inline-flex;
     align-items: center;
     gap: 15px;
-    padding: 10px 15px;
-    background-color: var(--new-chat-button-bg);
+    padding: 12px 15px;
+    background-color: var(--card-bg-color);
     border-radius: 50px;
     font-size: 14px;
-    color: var(--text-color-secondary);
+    color: var(--text-secondary-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 /* --- Recent Section --- */
 .sidebar .recent {
-    flex: 1; /* Allows this section to grow and push the bottom section down */
-    display: flex;
-    flex-direction: column;
+    flex: 1; /* Allows this section to grow */
     margin-top: 30px;
 }
 
 .sidebar .recent-title {
-    margin-bottom: 10px;
-    color: var(--text-color-primary);
+    color: var(--text-primary-color);
+    margin-bottom: 15px;
+    padding-left: 10px;
 }
 
-/* --- Shared styles for Recent and Bottom items --- */
+/* --- Shared styles for all sidebar items --- */
 .sidebar .sidebar-item {
     display: flex;
     align-items: center;
     gap: 15px;
     padding: 10px 15px;
     border-radius: 50px;
-    color: var(--text-color-primary);
-    margin-bottom: 10px;
+    color: var(--text-primary-color);
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-/* --- Fade-in animation (remains the same) --- */
-.sidebar .recent, .sidebar .sidebar-item p {
-    animation: fadeIn 1.5s;
+/* --- Hover & Active States --- */
+.sidebar .menu:hover, .sidebar .new-chat:hover, .sidebar .sidebar-item:hover {
+    background-color: var(--hover-bg-color);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.sidebar .sidebar-item.active {
+    background-color: var(--hover-bg-color);
+}
+
+/* --- Text Animation Styles --- */
+.sidebar p {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .recent-title,
+.sidebar.collapsed .sidebar-item p,
+.sidebar.collapsed .new-chat p {
+    opacity: 0;
+    width: 0; /* Hide text when collapsed */
+    overflow: hidden;
 }

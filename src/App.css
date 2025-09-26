@@ -17,17 +17,26 @@
   background-color: #e2e2e2; /* Example background */
   box-shadow: -2px 0 5px rgba(0,0,0,0.1); /* Optional: add a shadow */
 }
-/* Styles for the new theme toggle button */
+/* A wrapper to help position the button */
+.app-wrapper {
+  position: relative; /* This is the key fix for centering */
+  display: flex;
+  width: 100%;
+}
+
+/* Styles for the theme toggle button */
 .theme-toggle-button {
   position: absolute;
   top: 20px;
-  /* New styles for centering */
+  
+  /* --- UPDATE THESE LINES --- */
   left: 50%;
   transform: translateX(-50%);
-  
-  z-index: 1000; /* Ensure it stays on top of other content */
+  /* --- END OF UPDATE --- */
+
+  z-index: 1000;
   padding: 8px 16px;
-  background-color: #6a6a6a;
+  background-color: blue;
   color: white;
   border: none;
   border-radius: 20px;
