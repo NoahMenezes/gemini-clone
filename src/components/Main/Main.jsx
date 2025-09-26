@@ -43,6 +43,7 @@ const Main = () => {
                 </div>
                 <div className="bottom-info">
                     Gemini may be innacurate, so please double cheeck the info
+
                 </div>
             </div>
         </div>

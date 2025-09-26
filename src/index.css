@@ -11,3 +11,32 @@
   min-height: 100vh;
   display: flex;
 }
+/* Add this to your main index.css or a new theme.css file */
+:root {
+  /* Light Theme Variables */
+  --bg-color: #ffffff;
+  --sidebar-bg-color: #f0f4f9;
+  --card-bg-color: #f0f4f9;
+  --text-primary-color: #282828;
+  --text-secondary-color: #585858;
+  --text-greet-color: #c4c7c5;
+  --hover-bg-color: #e2e6eb;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+body.dark {
+  /* Dark Theme Variables */
+  --bg-color: #131314;
+  --sidebar-bg-color: #1e1f20;
+  --card-bg-color: #1e1f20;
+  --text-primary-color: #e3e3e3;
+  --text-secondary-color: #c4c7c5;
+  --text-greet-color: #585858;
+  --hover-bg-color: #3a3b3c;
+  --shadow-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Apply a smooth transition to color changes */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

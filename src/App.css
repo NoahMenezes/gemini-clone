@@ -17,3 +17,27 @@
   background-color: #e2e2e2; /* Example background */
   box-shadow: -2px 0 5px rgba(0,0,0,0.1); /* Optional: add a shadow */
 }
+/* Styles for the new theme toggle button */
+.theme-toggle-button {
+  position: absolute;
+  top: 20px;
+  /* New styles for centering */
+  left: 50%;
+  transform: translateX(-50%);
+  
+  z-index: 1000; /* Ensure it stays on top of other content */
+  padding: 8px 16px;
+  background-color: #6a6a6a;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle-button:hover {
+  background-color: #4a4a4a;
+}
