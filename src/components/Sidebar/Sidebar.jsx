@@ -1,39 +1,53 @@
-import React from 'react'
-import './Sidebar.css'
-import {assets} from '../../gemini-clone-assets/assets/assets'
-const Sidebar = () => {
-  return (
-    <div className='sidebar'>
-    <div className="top"> 
-        <img src="menu" alt={assets.menu_icon} />
-        <div className='new-chat'>
-            <img src={assets.plus_icon} alt="" />    
-            <p>New Chat</p>
-        </div>
-        <div className="recent">
-            <p className="recent-title">Recent</p>
-            <div className="reecent-entry">
-                <img src={assets.message_icon} alt="" />
-                <p>What is react...</p>
-            </div>
-            </div>    
-     </div>
-     <div className="bottom">
-        <div className="botton-item recent-entry">
-            <img src={assets.question_icon} alt="" />
-            <p>Help</p>
-        </div>
-        <div className="botton-item recent-entry">
-            <img src={assets.history_icon} alt="" />
-            <p>Help</p>
-        </div>
-        <div className="botton-item recent-entry">
-            <img src={assets.setting_icon} alt="" />
-            <p>Help</p>
-        </div>
-     </div>
-    </div>
-  )
-}
+import React, { useState } from 'react';
+import './Sidebar.css';
+import { assets } from '../../gemini-clone-assets/assets/assets';
 
-export default Sidebar
+const Sidebar = () => {
+    // 1. State to track if the sidebar is extended
+    const [extended, setExtended] = useState(false);
+
+    return (
+        <div className='sidebar'>
+            <div className="top">
+                {/* 2. Click this image to toggle the 'extended' state */}
+                <img 
+                    onClick={() => setExtended(prev => !prev)} 
+                    className='menu' 
+                    src={assets.menu_icon} 
+                    alt="Menu Icon" 
+                />
+                <div className='new-chat'>
+                    <img src={assets.plus_icon} alt="New Chat Icon" />
+                    {/* 3. This text only shows if 'extended' is true */}
+                    {extended ? <p>New Chat</p> : null}
+                </div>
+                
+                {extended ? (
+                    <div className="recent">
+                        <p className="recent-title">Recent</p>
+                        <div className="recent-entry">
+                            <img src={assets.message_icon} alt="Message Icon" />
+                            <p>What is react...</p>
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+            <div className="bottom">
+                <div className="bottom-item recent-entry">
+                    <img src={assets.question_icon} alt="Help Icon" />
+                    {extended ? <p>Help</p> : null}
+                </div>
+                <div className="bottom-item recent-entry">
+                    <img src={assets.history_icon} alt="History Icon" />
+                    {extended ? <p>Activity</p> : null}
+                </div>
+                <div className="bottom-item recent-entry">
+                    <img src={assets.setting_icon} alt="Settings Icon" />
+                    {extended ? <p>Settings</p> : null}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Sidebar;
