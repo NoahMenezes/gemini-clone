@@ -1,19 +1,106 @@
-.main{
+/* --- Global Style Variables --- */
+:root {
+    --primary-text-color: #585858;
+    --card-bg-color: #f0f4f9;
+    --card-hover-bg-color: #e2e6eb;
+    --gradient-start: #4b90ff;
+    --gradient-end: #ff5546;
+}
+
+/* --- Main Layout --- */
+.main {
     flex: 1;
     min-height: 100vh;
     padding-bottom: 15vh;
     position: relative;
 }
 
-.main .nav{
+.main .nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 22px;
     padding: 20px;
-    color: #585858;
+    color: var(--primary-text-color);
 }
-.main .nav img{
+
+.main .nav img {
     width: 40px;
     border-radius: 50%;
+}
+
+.main-container {
+    max-width: 900px;
+    margin: 0 auto; /* Use 0 auto for centering */
+}
+
+/* --- Greeting Text --- */
+.main .greet {
+    margin: 50px 0;
+    font-size: 56px;
+    font-weight: 500; /* Added for better text visibility */
+    color: #c4c7c5;
+}
+
+.main .greet span {
+    background: -webkit-linear-gradient(16deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Cards Layout --- */
+.main .cards {
+    display: grid;
+    /* Adjusted minmax for better proportions */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.main .card {
+    height: 200px;
+    padding: 15px;
+    background-color: var(--card-bg-color);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    /* Added transition for smooth hover effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- Card Hover Effect ✨ --- */
+.main .card:hover {
+    background-color: var(--card-hover-bg-color);
+    transform: translateY(-5px); /* Lifts the card up slightly */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.main .card p {
+    color: var(--primary-text-color);
+    font-size: 17px;
+}
+
+.main .card img {
+    width: 35px; /* Slightly larger icon */
+    padding: 5px;
+    position: absolute; /* Positioned relative to the card */
+    background-color: white;
+    border-radius: 50%; /* Perfect circle */
+    bottom: 15px;      /* Better spacing from edge */
+    right: 15px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+}
+
+
+/* --- Responsive Design for Mobile --- */
+@media (max-width: 600px) {
+    .main .greet {
+        font-size: 38px; /* Reduce font size for small screens */
+    }
+    .main .cards {
+        padding: 10px; /* Reduce padding */
+    }
+    .main .card {
+        height: 180px; /* Slightly shorter cards */
+    }
 }

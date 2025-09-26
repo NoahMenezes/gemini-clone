@@ -1,81 +1,97 @@
+/* --- Global Style Variables --- */
+:root {
+    --sidebar-bg: #f0f4f9;
+    --sidebar-item-hover-bg: #e2e6eb;
+    --new-chat-button-bg: #e6eaf1;
+    --text-color-primary: #282828;
+    --text-color-secondary: grey;
+    --transition-speed: 0.3s;
+}
+
+/* --- Main Sidebar Container --- */
 .sidebar {
     min-height: 100vh;
+    width: 250px; /* Set an explicit width for expansion */
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #f0f4f9;
+    background-color: var(--sidebar-bg);
     padding: 25px 15px;
-    /* Added for smooth animation */
-    transition: 0.5s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    /* Transition the width for a smooth collapse/expand animation */
+    transition: width var(--transition-speed) ease;
 }
 
+/* --- Collapsed State --- */
+.sidebar.collapsed {
+    width: 80px; /* Width when collapsed */
+}
+
+/* --- General Image Styles --- */
 .sidebar img {
-    width: 20px;
+    width: 25px; /* Slightly larger for better visibility */
+}
+
+/* --- Interactive Items & Hover Effects --- */
+.sidebar .menu, .sidebar .new-chat, .sidebar .sidebar-item {
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
 }
 
 .sidebar .menu {
     display: block;
     margin-left: 10px;
-    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
 }
 
+.sidebar .menu:hover, .sidebar .new-chat:hover, .sidebar .sidebar-item:hover {
+    background-color: var(--sidebar-item-hover-bg);
+}
+
+/* --- New Chat Button --- */
 .sidebar .new-chat {
-    margin-top: 50px; /* Adjusted margin */
+    margin-top: 50px;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     padding: 10px 15px;
-    background-color: #e6eaf1;
+    background-color: var(--new-chat-button-bg);
     border-radius: 50px;
     font-size: 14px;
-    color: grey;
-    cursor: pointer;
+    color: var(--text-color-secondary);
 }
 
+/* --- Recent Section --- */
 .sidebar .recent {
+    flex: 1; /* Allows this section to grow and push the bottom section down */
     display: flex;
     flex-direction: column;
-    /* Added for smooth appearance */
+    margin-top: 30px;
+}
+
+.sidebar .recent-title {
+    margin-bottom: 10px;
+    color: var(--text-color-primary);
+}
+
+/* --- Shared styles for Recent and Bottom items --- */
+.sidebar .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    border-radius: 50px;
+    color: var(--text-color-primary);
+    margin-bottom: 10px;
+}
+
+/* --- Fade-in animation (remains the same) --- */
+.sidebar .recent, .sidebar .sidebar-item p {
     animation: fadeIn 1.5s;
 }
 
-/* For fade-in animation on text */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-
-.sidebar .recent-title {
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-.sidebar .recent-entry {
-    display: flex;
-    align-items: center; /* Changed to center for better alignment */
-    gap: 10px;
-    padding: 10px;
-    padding-right: 40px;
-    border-radius: 50px;
-    color: #282828;
-    cursor: pointer;
-}
-
-.sidebar .recent-entry:hover {
-    background-color: #e2e6eb;
-}
-
-.sidebar .bottom {
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar .bottom-item {
-    padding-right: 10px;
-    cursor: pointer;
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
