@@ -9,7 +9,6 @@
 }
 
 /* --- Main Sidebar Container --- */
-/* --- Main Sidebar Container --- */
 .sidebar {
     min-height: 100vh;
     width: 250px;
@@ -34,22 +33,31 @@
 
 /* --- General Image Styles --- */
 .sidebar img {
-    width: 25px; /* Default size for icons */
+    width: 25px; /* Default size for other icons */
+    /* Ensure all icons are colored appropriately for the theme */
+    filter: var(--icon-filter); /* Added to manage icon color */
 }
 
-
 /* ################################### */
-/* ##########  THE FIX  ########## */
+/* ##########  THE FIX  ########## */
 /* ################################### */
 
 /* --- UPDATED Menu Icon --- */
 .sidebar .menu {
-    width: 30px; /* Specific width for the menu icon */
-    padding: 12px; /* Creates a larger clickable area */
+    width: 40px;      /* Increased from 35px */
+    padding: 18px;    /* Increased from 15px */
     margin-bottom: 50px;
     border-radius: 50%;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    background-color: blue;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    filter: var(--icon-filter);
+}
+
+.sidebar .menu:hover {
+    background-color: var(--hover-bg-color); /* Stronger hover effect */
+    transform: scale(1.1); /* Makes it slightly larger on hover */
 }
 
 
