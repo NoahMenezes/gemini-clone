@@ -24,7 +24,7 @@ function App() {
         onClick={() => setDarkMode(prev => !prev)}
         className="theme-toggle-button"
       >
-        Background color change
+        Change theme
       </button>
 
       <Sidebar />
