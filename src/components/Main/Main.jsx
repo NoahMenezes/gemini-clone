@@ -1,10 +1,13 @@
 // src/components/Main/Main.jsx
 
-import React from 'react';
+import React, { useContext } from 'react';
 import './Main.css';
 import { assets } from '../../gemini-clone-assets/assets/assets';
+import { Context } from '../context/Context';
 
 const Main = () => {
+    const {onSent, recentPrompt, showResult, loading, resultData, setInput, input}=useContext(Context)
+
   return (
     <div className='main'>
       <div className="nav">
@@ -42,7 +45,7 @@ const Main = () => {
             <div>
               <img src={assets.gallery_icon} alt="" />
               <img src={assets.mic_icon} alt="" />
-              <img src={assets.send_icon} alt="" />
+              <img onClick={(e)=>onSent()} src={assets.send_icon} alt="" />
             </div>
           </div>
           <div className="bottom-info">
