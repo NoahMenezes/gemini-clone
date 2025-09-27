@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+// src/App.jsx
+
+import React, { useState, useEffect } from 'react'; // FIX: Imported useState and useEffect
 import './App.css';
 import Sidebar from './components/Sidebar/Sidebar';
 import Main from './components/Main/Main';
@@ -15,16 +17,13 @@ function App() {
   }, [darkMode]);
 
   return (
-    // The .app-wrapper is necessary for positioning the button
     <div className="app-wrapper">
-      {/* The inline style has been removed.
-        The className now correctly applies the centering styles from App.css.
-      */}
       <button
         onClick={() => setDarkMode(prev => !prev)}
         className="theme-toggle-button"
       >
-        Change theme
+        {/* FIX: Combined the button text into one line */}
+        Change Theme
       </button>
 
       <Sidebar />
