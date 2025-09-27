@@ -195,6 +195,9 @@
     width:40px;
     border-radius: 50%;
 }
+.result-data{
+    display: flex;
+}
 /* --- Responsive Design --- */
 @media (max-width: 600px) {
     .main .greet {
