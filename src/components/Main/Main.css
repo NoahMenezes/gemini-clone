@@ -198,6 +198,13 @@
 .result-data{
     display: flex;
 }
+.loader{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+
+}
 /* --- Responsive Design --- */
 @media (max-width: 600px) {
     .main .greet {
