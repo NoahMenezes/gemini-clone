@@ -1,42 +1,63 @@
+// src/components/context/Context.jsx
+
 import React, { createContext, useState } from "react";
 import runChat from "../config/gemini";
 
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-    // State to manage input, loading, and results
     const [input, setInput] = useState("");
     const [recentPrompt, setRecentPrompt] = useState("");
     const [prevPrompts, setPrevPrompts] = useState([]);
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
-    const delayPara = (index,nextWord )=>{
 
-    }
+    // This function will add words to the state one by one with a delay
+    const delayPara = (index, nextWord) => {
+        setTimeout(function () {
+            setResultData(prev => prev + nextWord);
+        }, 75 * index);
+    };
+
     const onSent = async (prompt) => {
         setResultData("");
         setLoading(true);
-        setShowResult(true );
+        setShowResult(true);
         setRecentPrompt(input);
-        const response=await runChat(input);
-        let responseArray=response.split("**")
-        let newResponseArray;
-        for(let i=0;i<responseArray.length;i++){
-            if(i===0 ||i%2!==1){
-                newArray+=responseArray[i];
-            }   
-            else{
-                newArray+="<b>"+responseArray+"</b>";
+        
+        const response = await runChat(input);
+
+        // --- Start of Formatting and Typing Logic ---
+
+        // 1. Format bold text
+        let responseArray = response.split("**");
+        let newResponse = ""; // FIX: Initialize as an empty string
+        for (let i = 0; i < responseArray.length; i++) {
+            if (i === 0 || i % 2 !== 1) {
+                newResponse += responseArray[i];
+            } else {
+                // FIX: Add the correct part of the array to the bold tag
+                newResponse += "<b>" + responseArray[i] + "</b>";
             }
         }
 
-        setResultData(newArray);
+        // 2. Format list items and new lines
+        let newResponse2 = newResponse.split("*").join("</br>");
+        
+        // 3. Create the typing effect
+        let newResponseArray = newResponse2.split(" ");
+        for (let i = 0; i < newResponseArray.length; i++) {
+            const nextWord = newResponseArray[i];
+            delayPara(i, nextWord + " ");
+        }
+
+        // --- End of Logic ---
+
         setLoading(false);
         setInput("");
     };
 
-    // The context value is an object with keys and values
     const contextValue = {
         prevPrompts,
         setPrevPrompts,
@@ -50,7 +71,6 @@ const ContextProvider = (props) => {
         setInput,
     };
 
-    // The component must return JSX, not an object
     return (
         <Context.Provider value={contextValue}>
             {props.children}
