@@ -189,7 +189,11 @@
 }
 .result-title{
     margin: 40px;
-    
+    gap:20px;
+}
+.result-img{
+    width:40px;
+    border-radius: 50%;
 }
 /* --- Responsive Design --- */
 @media (max-width: 600px) {

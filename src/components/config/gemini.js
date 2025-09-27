@@ -5,7 +5,7 @@ import {
 } from "@google/generative-ai";
 
 // Best practice: Store your API key in an environment variable
-const API_KEY = "YOUR_API_KEY"; // <-- IMPORTANT: Replace with your actual API Key
+const API_KEY = "AIzaSyAbe7dX42BKpqIJQcRAKBd3gzO0rVLMW0M"; // <-- IMPORTANT: Replace with your actual API Key
 const MODEL_name = 'gemini-1.0-pro';
 
 async function runChat(prompt) {
