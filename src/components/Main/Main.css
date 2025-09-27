@@ -179,7 +179,18 @@
     font-weight: 300;
     color: var(--text-secondary-color); /* Use global theme color */
 }
-
+.result{
+    padding: 0px 5%;
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+.result::-webkit-scrollbar{
+    display: none;
+}
+.result-title{
+    margin: 40px;
+    
+}
 /* --- Responsive Design --- */
 @media (max-width: 600px) {
     .main .greet {
