@@ -12,22 +12,15 @@ const ContextProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
 
-    const onSent = async () => {
-        if (!input) return; // Don't send if input is empty
-
+    const onSent = async (prompt) => {
+        setResultData("");
         setLoading(true);
-        setShowResult(true);
+        setShowResult(true );
         setRecentPrompt(input);
-        
-        // Add the prompt to previous prompts list
-        setPrevPrompts(prev => [...prev, input]);
-
-        // The await call is now correctly inside the async function
-        const response = await runChat(input);
-        
+        const response=await runChat(input);
         setResultData(response);
         setLoading(false);
-        setInput(""); // Clear input after sending
+        setInput("");
     };
 
     // The context value is an object with keys and values
