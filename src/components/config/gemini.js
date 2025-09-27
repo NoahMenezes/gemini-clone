@@ -2,11 +2,11 @@
 // In a real application, you would never hardcode this in client-side JavaScript.
 // It would be securely fetched from a backend or environment variable.
  // Replace with how you securely access your key
-const {
+import {
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
-} = require('@google/generative-ai');
+} from "@google/generative-ai";
 
 // 1. Declare the API Key only once
 const API_KEY = "AIzaSyAbe7dX42BKpqIJQcRAKBd3gzO0rVLMW0M"; // Best practice: Use process.env.GEMINI_API_KEY
@@ -46,7 +46,9 @@ async function runChat(prompt) {
     const chat = model.startChat({
         generationConfig,
         safetySettings,
-        history: [],
+        history: [
+
+        ],
     });
 
     const result = await chat.sendMessage(prompt);
