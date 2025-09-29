@@ -123,3 +123,71 @@
     width: 0; /* Hide text when collapsed */
     overflow: hidden;
 }
+
+/* Add/replace these styles in your Sidebar.css file */
+
+.sidebar .bottom {
+    position: relative; 
+}
+
+.settings-item-container {
+    width: 100%;
+}
+
+.settings-menu {
+    position: absolute;
+    bottom: 55px;
+    left: 15px;
+    background-color: #1e1f20;
+    border-radius: 10px;
+    padding: 10px;
+    width: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-menu hr {
+    border: none;
+    height: 1px;
+    background-color: #333;
+    margin: 8px 0;
+}
+
+.settings-item {
+    padding: 10px 15px; /* Adjusted padding */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.settings-item:hover {
+    background-color: #333537;
+}
+
+.settings-item p {
+    margin: 0;
+    color: #e8eaed;
+    font-size: 14px;
+}
+
+.location-info {
+    padding: 10px 15px; /* Adjusted padding */
+}
+
+.location-info p {
+    color: #e8eaed;
+    font-size: 14px;
+    margin: 0;
+}
+
+.location-subtext {
+    font-size: 12px;
+    color: #9aa0a6;
+    margin: 0 15px 5px;
+}
+
+.settings-item-container > .sidebar-item {
+    width: 100%;
+}

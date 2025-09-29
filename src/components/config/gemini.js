@@ -4,9 +4,9 @@ import {
     HarmBlockThreshold,
 } from "@google/generative-ai";
 
-// Best practice: Store your API key in an environment variable
-const API_KEY = "AIzaSyCIzife7o0-dzzf4GsC4dDbpzMcSk476bo"; // <-- IMPORTANT: Replace with your actual API Key
-const MODEL_name = 'gemini-pro';
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const MODEL_name = 'gemini-2.0-flash';
+
 
 async function runChat(prompt) {
     const genAI = new GoogleGenerativeAI(API_KEY);
