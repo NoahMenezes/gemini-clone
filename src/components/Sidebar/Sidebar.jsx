@@ -11,10 +11,11 @@ const Sidebar = () => {
 
     // Array of objects for the settings menu items (use available icons only)
     const settingsOptions = [
-        { icon: assets.history_icon, text: 'Activity' },
-        { icon: assets.user_icon, text: 'Personal context' },
-        { icon: assets.youtube_icon, text: 'Public links' },
-        { icon: assets.code_icon, text: 'Developer options' },
+        { icon: assets.user_icon, text: 'Your profile', action: () => console.log('Profile clicked') },
+        { icon: assets.history_icon, text: 'Activity & history', action: () => console.log('Activity clicked') },
+        { icon: assets.bulb_icon, text: 'Extensions', action: () => console.log('Extensions clicked') },
+        { icon: assets.code_icon, text: 'Developer settings', action: () => console.log('Developer settings clicked') },
+        { icon: assets.question_icon, text: 'Help & support', action: () => console.log('Help clicked') },
     ];
     
     useEffect(() => {
@@ -60,7 +61,7 @@ const Sidebar = () => {
                               onClick={() => selectSession(s.id)}
                             >
                                 <img src={assets.message_icon} alt="Message Icon" />
-                                <p title={s.title}>{s.title && s.title.length > 24 ? s.title.substring(0, 21) + '...' : (s.title || 'New chat')}</p>
+                                <p title={s.title}>{s.title && s.title.length > 20 ? s.title.substring(0, 18) + '...' : (s.title || 'New chat')}</p>
                                 <button className="delete-btn" title="Delete chat" onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}>×</button>
                             </div>
                         ))}
@@ -81,20 +82,24 @@ const Sidebar = () => {
                     {showSettings && (
                         <div className="settings-menu">
                             {settingsOptions.map((item, index) => (
-                                <div key={index} className="settings-item">
+                                <div key={index} className="settings-item" onClick={item.action}>
                                     <img src={item.icon} alt={`${item.text} Icon`} />
                                     <p>{item.text}</p>
                                 </div>
                             ))}
                             <hr />
-                            <div className="settings-item" onClick={() => { if (confirm('Clear all chats?')) clearAllSessions(); }}>
+                            <div className="settings-item danger-item" onClick={() => { if (confirm('Clear all chats? This action cannot be undone.')) clearAllSessions(); }}>
                                 <img src={assets.history_icon} alt="Clear all" />
                                 <p>Clear all chats</p>
                             </div>
+                            <hr />
                             <div className='location-info'>
-                                <p>Bandiwa, Goa, India</p>
+                                <img src={assets.compass_icon} alt="Location" />
+                                <div className='location-text'>
+                                    <p className='location-name'>Bandiwa, Goa, India</p>
+                                    <p className='location-subtext'>From your IP address • Update location</p>
+                                </div>
                             </div>
-                            <p className='location-subtext'>From your IP address • Update location</p>
                         </div>
                     )}
 

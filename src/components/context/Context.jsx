@@ -1,7 +1,7 @@
 // src/components/context/Context.jsx
 
 import React, { createContext, useEffect, useMemo, useState } from "react";
-import runChat from "../config/gemini";
+import getFunResponse from "../config/gemini";
 
 export const Context = createContext();
 
@@ -11,6 +11,35 @@ const ContextProvider = (props) => {
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
+
+    // Function to generate concise titles from prompts
+    const generateConciseTitle = (prompt) => {
+        if (!prompt || prompt.trim().length === 0) return 'New chat';
+        
+        // Remove common question words and clean up
+        let cleaned = prompt.trim()
+            .replace(/^(what|how|why|when|where|who|can you|could you|please|help me|i need|tell me about)\s+/i, '')
+            .replace(/\?+$/g, '')
+            .replace(/[.!]+$/g, '')
+            .trim();
+        
+        // If still too long, take first meaningful words
+        if (cleaned.length > 25) {
+            const words = cleaned.split(' ');
+            let title = '';
+            for (const word of words) {
+                if ((title + ' ' + word).length <= 25) {
+                    title += (title ? ' ' : '') + word;
+                } else {
+                    break;
+                }
+            }
+            cleaned = title || cleaned.slice(0, 25);
+        }
+        
+        // Capitalize first letter
+        return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    };
 
     // Session management
     // sessions: [{ id, title, messages: [{role: 'user'|'assistant', content}], createdAt }]
@@ -160,7 +189,7 @@ const ContextProvider = (props) => {
         let workingSessionId = currentSessionId;
         if (!workingSessionId) {
             const id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-            const session = { id, title: userText.slice(0, 40) || 'New chat', messages: [], createdAt: Date.now() };
+            const session = { id, title: generateConciseTitle(userText), messages: [], createdAt: Date.now() };
             setSessions(prev => [session, ...prev]);
             setCurrentSessionId(id);
             workingSessionId = id;
@@ -169,11 +198,11 @@ const ContextProvider = (props) => {
         // add user message
         setSessions(prev => prev.map(s => s.id === workingSessionId ? {
             ...s,
-            title: s.messages.length === 0 ? (userText.slice(0, 40) || 'New chat') : s.title,
+            title: s.messages.length === 0 ? generateConciseTitle(userText) : s.title,
             messages: [...s.messages, { role: 'user', content: userText }]
         } : s));
         
-        const response = await runChat(userText);
+        const response = await getFunResponse(userText);
 
         // Format full HTML and prepare a stripped typing text
         const formattedHtml = formatMarkdownToHtml(response);
@@ -219,6 +248,8 @@ const ContextProvider = (props) => {
             // derived
             prevPrompts,
             getCurrentSession,
+            // current session messages for chat history
+            currentMessages: getCurrentSession()?.messages || [],
         }}>
             {props.children}
         </Context.Provider>

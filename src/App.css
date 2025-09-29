@@ -40,15 +40,15 @@
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
   font-size: 14px;
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-  box-shadow: 0 8px 24px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, #4b90ff, #ff5546);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255,255,255,0.08);
   backdrop-filter: blur(6px);
   transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
 .theme-toggle-button:hover {
   transform: translateX(-50%) translateY(-1px) scale(1.03);
-  box-shadow: 0 14px 32px var(--shadow-color);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.15);
 }
 
 .theme-toggle-button:active {
@@ -57,9 +57,5 @@
 
 /* Dark mode slight tint */
 body.dark .theme-toggle-button {
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklab, var(--accent-1) 85%, #000 15%),
-    color-mix(in oklab, var(--accent-2) 85%, #000 15%)
-  );
+  background: linear-gradient(135deg, #3a7bd6, #d63d2e);
 }

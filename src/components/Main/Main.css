@@ -152,7 +152,98 @@ body.dark {
     transform: translateY(-4px) rotate(-6deg);
 }
 
-/* --- Results --- */
+/* --- Chat History --- */
+.chat-history {
+    padding: 20px 5%;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    scroll-behavior: smooth;
+}
+
+.chat-history::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- Message Layout --- */
+.message {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    animation: slideInFade 0.3s ease-out;
+}
+
+.message.user {
+    flex-direction: row;
+}
+
+.message.assistant {
+    flex-direction: row;
+}
+
+.message-header {
+    flex-shrink: 0;
+}
+
+.message-header img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.message-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.message.user .message-content {
+    background: color-mix(in oklab, var(--gradient-start) 15%, var(--card-bg-color));
+    border: 1px solid rgba(75, 144, 255, 0.2);
+    border-radius: 18px 18px 18px 4px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.message.assistant .message-content {
+    background: color-mix(in oklab, var(--card-bg-color) 94%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px 18px 4px 18px;
+    padding: 16px 20px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.message-content p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-primary-color);
+    word-wrap: break-word;
+}
+
+.message.user .message-content p {
+    color: var(--text-primary-color);
+    font-weight: 400;
+}
+
+/* --- Legacy Results (for backward compatibility) --- */
 .result {
     padding: 0px 5%;
     max-height: 70vh;
@@ -189,40 +280,42 @@ body.dark {
 }
 
 /* --- AI Output Polishing (Markdown-like) --- */
-.result-data h1,
-.result-data h2,
-.result-data h3 {
+.result-data h1, .message-content h1,
+.result-data h2, .message-content h2,
+.result-data h3, .message-content h3 {
     color: var(--text-primary-color);
     margin: 12px 0 8px;
 }
-.result-data h1 { font-size: 28px; }
-.result-data h2 { font-size: 22px; }
-.result-data h3 { font-size: 18px; }
+.result-data h1, .message-content h1 { font-size: 24px; }
+.result-data h2, .message-content h2 { font-size: 20px; }
+.result-data h3, .message-content h3 { font-size: 16px; }
 
-.result-data ul,
-.result-data ol {
+.result-data ul, .message-content ul,
+.result-data ol, .message-content ol {
     margin: 8px 0 8px 20px;
     color: var(--text-primary-color);
 }
-.result-data li { margin: 6px 0; }
+.result-data li, .message-content li { margin: 4px 0; }
 
-.result-data pre,
-.result-data code {
+.result-data pre, .message-content pre,
+.result-data code, .message-content code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-.result-data pre {
+.result-data pre, .message-content pre {
     background: color-mix(in oklab, var(--card-bg-color) 92%, transparent);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 8px;
+    padding: 10px;
     overflow-x: auto;
-    box-shadow: 0 6px 16px var(--shadow-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    margin: 8px 0;
 }
-.result-data code {
+.result-data code, .message-content code {
     background: color-mix(in oklab, var(--card-bg-color) 90%, transparent);
-    padding: 2px 6px;
-    border-radius: 6px;
+    padding: 2px 5px;
+    border-radius: 4px;
     border: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
 }
 .loader {
     width: 100%;
@@ -295,7 +388,7 @@ body.dark {
     border-radius: 50%;
     padding: 5px;
     transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    filter: var(--icon-filter);
+    filter: none;
 }
 
 .search-box img:hover {
@@ -315,7 +408,21 @@ body.dark {
     transform: translateY(-2px) scale(1.08);
     box-shadow: 0 12px 26px var(--shadow-color);
 }
+/* --- Main.css - Add this section near the end or in the icon-specific flair section --- */
 
+/* Style for when the microphone is actively listening */
+.search-box img.listening-pulse {
+    /* Apply a distinct background to show active state */
+    background-color: var(--gradient-end); /* A warm color, like the end of your gradient (#ff5546) */
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(285deg) brightness(100%) contrast(100%); /* Make the mic icon white */
+    animation: micPulse 1.5s ease-out infinite; /* Apply the pulsing animation */
+    transform: scale(1.1); /* Slightly larger */
+}
+
+/* Ensure the hover effect doesn't conflict too badly */
+.search-box img.listening-pulse:hover {
+    transform: scale(1.15); 
+}
 .main .bottom-info {
     font-size: 13px;
     margin: 15px auto;
@@ -438,8 +545,12 @@ body.dark .search-box img:hover {
 }
 
 @keyframes micPulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gradient-start) 40%, transparent); }
-    50% { box-shadow: 0 0 0 10px transparent; }
+    0%, 100% { 
+        box-shadow: 0 0 0 0 color-mix(in srgb, red 50%, transparent); 
+    }
+    50% { 
+        box-shadow: 0 0 0 12px transparent; 
+    }
 }
 
 /* Optional subtle sheen on hover */
