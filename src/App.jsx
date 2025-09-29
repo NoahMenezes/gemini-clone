@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'; // FIX: Imported useState an
 import './App.css';
 import Sidebar from './components/Sidebar/Sidebar';
 import Main from './components/Main/Main';
+import ContextProvider from './components/context/Context';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -17,6 +18,7 @@ function App() {
   }, [darkMode]);
 
   return (
+    <ContextProvider>
     <div className="app-wrapper">
       <button
         onClick={() => setDarkMode(prev => !prev)}
@@ -29,6 +31,7 @@ function App() {
       <Sidebar />
       <Main />
     </div>
+    </ContextProvider>
   );
 }
 

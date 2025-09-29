@@ -1,6 +1,6 @@
 // src/components/context/Context.jsx
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import runChat from "../config/gemini";
 
 export const Context = createContext();
@@ -8,10 +8,95 @@ export const Context = createContext();
 const ContextProvider = (props) => {
     const [input, setInput] = useState("");
     const [recentPrompt, setRecentPrompt] = useState("");
-    const [prevPrompts, setPrevPrompts] = useState([]);
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
+
+    // Session management
+    // sessions: [{ id, title, messages: [{role: 'user'|'assistant', content}], createdAt }]
+    const [sessions, setSessions] = useState(() => {
+        try {
+            const raw = localStorage.getItem("gc_sessions");
+            return raw ? JSON.parse(raw) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [currentSessionId, setCurrentSessionId] = useState(() => {
+        try {
+            return localStorage.getItem("gc_currentSessionId") || "";
+        } catch {
+            return "";
+        }
+    });
+
+    // Derive prevPrompts for Sidebar (titles)
+    const prevPrompts = useMemo(() => sessions.map(s => s.title), [sessions]);
+
+    // Persist sessions and current session
+    useEffect(() => {
+        try { localStorage.setItem("gc_sessions", JSON.stringify(sessions)); } catch {}
+    }, [sessions]);
+    useEffect(() => {
+        try { localStorage.setItem("gc_currentSessionId", currentSessionId); } catch {}
+    }, [currentSessionId]);
+
+    const getCurrentSession = () => sessions.find(s => s.id === currentSessionId) || null;
+
+    const newChat = () => {
+        const id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        const session = { id, title: "New chat", messages: [], createdAt: Date.now() };
+        setSessions(prev => [session, ...prev]);
+        setCurrentSessionId(id);
+        setRecentPrompt("");
+        setResultData("");
+        setShowResult(false);
+        setInput("");
+    };
+
+    const selectSession = (id) => {
+        setCurrentSessionId(id);
+        const s = sessions.find(x => x.id === id);
+        if (s) {
+            const lastUser = [...s.messages].reverse().find(m => m.role === 'user');
+            setRecentPrompt(lastUser ? lastUser.content : "");
+            const lastAssistant = [...s.messages].reverse().find(m => m.role === 'assistant');
+            setResultData(lastAssistant ? lastAssistant.content : "");
+            setShowResult(!!lastAssistant);
+            setInput("");
+        }
+    };
+
+    const deleteSession = (id) => {
+        setSessions(prev => prev.filter(s => s.id !== id));
+        if (currentSessionId === id) {
+            // move to next available session or reset view
+            const remaining = sessions.filter(s => s.id !== id);
+            if (remaining.length > 0) {
+                setCurrentSessionId(remaining[0].id);
+                const s0 = remaining[0];
+                const lastAssistant = [...s0.messages].reverse().find(m => m.role === 'assistant');
+                setResultData(lastAssistant ? lastAssistant.content : "");
+                const lastUser = [...s0.messages].reverse().find(m => m.role === 'user');
+                setRecentPrompt(lastUser ? lastUser.content : "");
+                setShowResult(!!lastAssistant);
+            } else {
+                setCurrentSessionId("");
+                setRecentPrompt("");
+                setResultData("");
+                setShowResult(false);
+            }
+        }
+    };
+
+    const clearAllSessions = () => {
+        setSessions([]);
+        setCurrentSessionId("");
+        setRecentPrompt("");
+        setResultData("");
+        setShowResult(false);
+        setInput("");
+    };
 
     // Simple Markdown -> HTML converter and typing helpers
     const formatMarkdownToHtml = (md) => {
@@ -41,14 +126,21 @@ const ContextProvider = (props) => {
     };
 
     const stripForTyping = (md) => {
+        if (!md) return "";
         return md
+            // Keep code text visible but remove backticks
             .replace(/```[\s\S]*?```/g, (m) => m.replace(/`/g, ''))
+            // Remove strong/inline formatting markers
             .replace(/\*\*|__/g, '')
             .replace(/`/g, '')
+            // Strip heading markers only
             .replace(/^###\s+/gm, '')
             .replace(/^##\s+/gm, '')
             .replace(/^#\s+/gm, '')
-            .replace(/^((?:- |\* )(.+))?$/gm, '• ');
+            // Convert ONLY actual markdown list items to a bullet prefix
+            .replace(/^[-*]\s+/gm, '• ')
+            // Collapse excessive blank lines to a single newline
+            .replace(/\n{3,}/g, '\n\n');
     };
 
     // Add words to the state one by one with a delay
@@ -62,9 +154,26 @@ const ContextProvider = (props) => {
         setResultData("");
         setLoading(true);
         setShowResult(true);
-        setRecentPrompt(input);
+        const userText = (typeof prompt === 'string' && prompt.length > 0) ? prompt : input;
+        setRecentPrompt(userText);
+        // ensure there is a current session
+        let workingSessionId = currentSessionId;
+        if (!workingSessionId) {
+            const id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            const session = { id, title: userText.slice(0, 40) || 'New chat', messages: [], createdAt: Date.now() };
+            setSessions(prev => [session, ...prev]);
+            setCurrentSessionId(id);
+            workingSessionId = id;
+        }
+
+        // add user message
+        setSessions(prev => prev.map(s => s.id === workingSessionId ? {
+            ...s,
+            title: s.messages.length === 0 ? (userText.slice(0, 40) || 'New chat') : s.title,
+            messages: [...s.messages, { role: 'user', content: userText }]
+        } : s));
         
-        const response = await runChat(input);
+        const response = await runChat(userText);
 
         // Format full HTML and prepare a stripped typing text
         const formattedHtml = formatMarkdownToHtml(response);
@@ -80,34 +189,36 @@ const ContextProvider = (props) => {
             setResultData(formattedHtml);
             setLoading(false);
             setInput("");
+            // add assistant message (store full HTML for rendering later)
+            const htmlToStore = formattedHtml;
+            setSessions(prev => prev.map(s => s.id === workingSessionId ? {
+                ...s,
+                messages: [...s.messages, { role: 'assistant', content: htmlToStore }]
+            } : s));
         }, 35 * (typingText.split(/\s+/).length + 2));
-    };
-
-    const contextValue = {
-        prevPrompts,
-        setPrevPrompts,
-        onSent,
-        setRecentPrompt,
-        recentPrompt,
-        showResult,
-        loading,
-        resultData,
-        input,
-        setInput,
     };
 
     return (
         <Context.Provider value={{
-            prevPrompts,
-            setPrevPrompts,
+            // chat io
             onSent,
-            setRecentPrompt,
+            input,
+            setInput,
             recentPrompt,
+            setRecentPrompt,
             showResult,
             loading,
             resultData,
-            input,
-            setInput,
+            // sessions
+            sessions,
+            currentSessionId,
+            newChat,
+            selectSession,
+            deleteSession,
+            clearAllSessions,
+            // derived
+            prevPrompts,
+            getCurrentSession,
         }}>
             {props.children}
         </Context.Provider>

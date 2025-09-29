@@ -1,38 +1,39 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import './Sidebar.css';
 import { assets } from '../../gemini-clone-assets/assets/assets';
+import { Context } from '../context/Context';
 
-const Sidebar = () => {
+const Sidebar = () => { 
+    const { sessions, currentSessionId, newChat, selectSession, deleteSession, clearAllSessions } = useContext(Context);
     const [extended, setExtended] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const settingsRef = useRef(null);
 
-    // Array of objects for the settings menu items
+    // Array of objects for the settings menu items (use available icons only)
     const settingsOptions = [
         { icon: assets.history_icon, text: 'Activity' },
         { icon: assets.user_icon, text: 'Personal context' },
-        { icon: assets.apps_icon, text: 'Apps' },
-        { icon: assets.scheduled_icon, text: 'Scheduled actions' },
-        { icon: assets.link_icon, text: 'Your public links' },
-        { icon: assets.theme_icon, text: 'Theme' },
-        { icon: assets.subscription_icon, text: 'Manage subscription' },
-        { icon: assets.upgrade_icon, text: 'Upgrade to Google AI Ultra' }, 
-        { icon: assets.feedback_icon, text: 'Send feedback' },
+        { icon: assets.youtube_icon, text: 'Public links' },
+        { icon: assets.code_icon, text: 'Developer options' },
     ];
     
     useEffect(() => {
         function handleClickOutside(event) {
+            // Check if settingsRef exists AND the click is outside the settings container
             if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-                if (!event.target.closest('.settings-item-container')) {
-                    setShowSettings(false);
-                }
+                // The original additional check (if (!event.target.closest('.settings-item-container'))) 
+                // is redundant because the check against settingsRef.current already covers the entire container.
+                // It's safer to just rely on the main check.
+                setShowSettings(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [settingsRef]);
+    // Removed settingsRef from dependency array as a ref object rarely changes and adding it 
+    // can cause linting warnings or unnecessary re-runs.
+    }, []); 
 
 
     return (
@@ -44,18 +45,25 @@ const Sidebar = () => {
                     src={assets.menu_icon} 
                     alt="Menu Icon" 
                 />
-                <div className='new-chat'>
+                <div className='new-chat' onClick={newChat}>
                     <img src={assets.plus_icon} alt="New Chat Icon" />
                     {extended ? <p>New Chat</p> : null}
                 </div>
                 
                 {extended ? (
                     <div className="recent">
-                        <p className="recent-title">Recent</p>
-                        <div className="sidebar-item active">
-                            <img src={assets.message_icon} alt="Message Icon" />
-                            <p>What is react...</p>
-                        </div>
+                        <p className="recent-title">Recent</p> 
+                        {sessions.map((s) => (
+                            <div
+                              key={s.id}
+                              className={`sidebar-item recent-entry ${currentSessionId === s.id ? 'active' : ''}`}
+                              onClick={() => selectSession(s.id)}
+                            >
+                                <img src={assets.message_icon} alt="Message Icon" />
+                                <p title={s.title}>{s.title && s.title.length > 24 ? s.title.substring(0, 21) + '...' : (s.title || 'New chat')}</p>
+                                <button className="delete-btn" title="Delete chat" onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}>×</button>
+                            </div>
+                        ))}
                     </div>
                 ) : null}
             </div>
@@ -68,24 +76,25 @@ const Sidebar = () => {
                     <img src={assets.history_icon} alt="History Icon" />
                     {extended ? <p>Activity</p> : null}
                 </div>
-                
+
                 <div ref={settingsRef} className="settings-item-container">
                     {showSettings && (
                         <div className="settings-menu">
-                            {/* Map over the settings options array, rendering only text */}
                             {settingsOptions.map((item, index) => (
                                 <div key={index} className="settings-item">
+                                    <img src={item.icon} alt={`${item.text} Icon`} />
                                     <p>{item.text}</p>
                                 </div>
                             ))}
                             <hr />
-                             <div className="settings-item">
-                                <p>Help</p>
+                            <div className="settings-item" onClick={() => { if (confirm('Clear all chats?')) clearAllSessions(); }}>
+                                <img src={assets.history_icon} alt="Clear all" />
+                                <p>Clear all chats</p>
                             </div>
                             <div className='location-info'>
                                 <p>Bandiwa, Goa, India</p>
                             </div>
-                             <p className='location-subtext'>From your IP address • Update location</p>
+                            <p className='location-subtext'>From your IP address • Update location</p>
                         </div>
                     )}
 

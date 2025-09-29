@@ -135,6 +135,7 @@
 .sidebar .sidebar-item {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* space for delete button */
     gap: 15px;
     padding: 10px 15px;
     border-radius: 50px;
@@ -142,6 +143,36 @@
     margin-top: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+}
+
+/* Recent entry: inner left cluster (icon + title) */
+.recent-entry {
+    position: relative;
+}
+.recent-entry img + p {
+    flex: 1;
+}
+
+/* Delete button for each chat */
+.recent-entry .delete-btn {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary-color);
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.2s ease;
+}
+.recent-entry:hover .delete-btn {
+    opacity: 1;
+}
+.recent-entry .delete-btn:hover {
+    background: var(--hover-bg-color);
 }
 
 /* --- Hover & Active States --- */

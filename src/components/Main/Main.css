@@ -308,7 +308,8 @@ body.dark {
 .search-box img[alt="Send"] {
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     box-shadow: 0 8px 18px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.12);
-    filter: brightness(1.35) contrast(1.1) saturate(1.2);
+    /* Override generic icon filter so the send glyph stays crisp */
+    filter: none;
 }
 .search-box img[alt="Send"]:hover {
     transform: translateY(-2px) scale(1.08);
