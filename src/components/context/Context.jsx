@@ -13,11 +13,49 @@ const ContextProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
 
-    // This function will add words to the state one by one with a delay
-    const delayPara = (index, nextWord) => {
+    // Simple Markdown -> HTML converter and typing helpers
+    const formatMarkdownToHtml = (md) => {
+        if (!md) return "";
+        let html = md;
+        // Fenced code blocks
+        html = html.replace(/```([\s\S]*?)```/g, (m, p1) => {
+            const code = p1.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return `<pre><code>${code}</code></pre>`;
+        });
+        // Inline code
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // Headings
+        html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+                   .replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
+                   .replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+        // Bold/italic
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+                   .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+                   .replace(/_([^_]+)_/g, '<i>$1</i>');
+        // Lists
+        html = html.replace(/^(?:- |\* )(.+)$/gm, '<li>$1</li>');
+        html = html.replace(/(?:\n)?(<li>.*?<\/li>\s*)+/gms, (m) => `<ul>${m.replace(/\n/g, '')}</ul>`);
+        // Paragraph breaks
+        html = html.replace(/\n{2,}/g, '<br/><br/>' ).replace(/\n/g, '<br/>' );
+        return html;
+    };
+
+    const stripForTyping = (md) => {
+        return md
+            .replace(/```[\s\S]*?```/g, (m) => m.replace(/`/g, ''))
+            .replace(/\*\*|__/g, '')
+            .replace(/`/g, '')
+            .replace(/^###\s+/gm, '')
+            .replace(/^##\s+/gm, '')
+            .replace(/^#\s+/gm, '')
+            .replace(/^((?:- |\* )(.+))?$/gm, '• ');
+    };
+
+    // Add words to the state one by one with a delay
+    const delayPara = (index, nextChunk) => {
         setTimeout(function () {
-            setResultData(prev => prev + nextWord);
-        }, 75 * index);
+            setResultData(prev => prev + nextChunk);
+        }, 35 * index);
     };
 
     const onSent = async (prompt) => {
@@ -28,34 +66,21 @@ const ContextProvider = (props) => {
         
         const response = await runChat(input);
 
-        // --- Start of Formatting and Typing Logic ---
+        // Format full HTML and prepare a stripped typing text
+        const formattedHtml = formatMarkdownToHtml(response);
+        const typingText = stripForTyping(response);
 
-        // 1. Format bold text
-        let responseArray = response.split("**");
-        let newResponse = ""; // FIX: Initialize as an empty string
-        for (let i = 0; i < responseArray.length; i++) {
-            if (i === 0 || i % 2 !== 1) {
-                newResponse += responseArray[i];
-            } else {
-                // FIX: Add the correct part of the array to the bold tag
-                newResponse += "<b>" + responseArray[i] + "</b>";
-            }
+        const words = typingText.split(/(\s+)/); // keep spaces
+        for (let i = 0; i < words.length; i++) {
+            delayPara(i, words[i]);
         }
 
-        // 2. Format list items and new lines
-        let newResponse2 = newResponse.split("*").join("</br>");
-        
-        // 3. Create the typing effect
-        let newResponseArray = newResponse2.split(" ");
-        for (let i = 0; i < newResponseArray.length; i++) {
-            const nextWord = newResponseArray[i];
-            delayPara(i, nextWord + " ");
-        }
-
-        // --- End of Logic ---
-
-        setLoading(false);
-        setInput("");
+        // After typing finishes, swap in the formatted HTML
+        setTimeout(() => {
+            setResultData(formattedHtml);
+            setLoading(false);
+            setInput("");
+        }, 35 * (typingText.split(/\s+/).length + 2));
     };
 
     const contextValue = {
@@ -72,7 +97,18 @@ const ContextProvider = (props) => {
     };
 
     return (
-        <Context.Provider value={contextValue}>
+        <Context.Provider value={{
+            prevPrompts,
+            setPrevPrompts,
+            onSent,
+            setRecentPrompt,
+            recentPrompt,
+            showResult,
+            loading,
+            resultData,
+            input,
+            setInput,
+        }}>
             {props.children}
         </Context.Provider>
     );

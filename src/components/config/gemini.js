@@ -7,7 +7,7 @@ import {
 // IMPORTANT: Use environment variables for API keys in production!
 // Never hardcode them directly in your code.
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY; 
-const MODEL_name = 'gemini-2.0-flash'; // Using a recent model like 1.5 Flash is great!
+const MODEL_name = 'gemini-2.0-flash'; // model name
 
 // Your original function is perfect, no changes needed here.
 async function runChat(prompt) {
@@ -15,9 +15,9 @@ async function runChat(prompt) {
     const model = genAI.getGenerativeModel({ model: MODEL_name });
 
     const generationConfig = {
-        temperature: 0.9,
-        topK: 1,
-        topP: 1,
+        temperature: 0.6, // more consistent, tool-like
+        topK: 32,
+        topP: 0.9,
         maxOutputTokens: 2048,
     };
 
@@ -44,38 +44,29 @@ async function runChat(prompt) {
     }
 }
 
-// ✨ --- The New and Improved Part --- ✨
-
 /**
  * This function takes a simple user query and turns it into a detailed, "fun" prompt.
  * @param {string} originalPrompt The user's simple question.
  * @returns {string} An enhanced prompt ready for the AI.
  */
 function createEnhancedPrompt(originalPrompt) {
-    // This is where the magic happens! We give the AI a role and clear rules.
-    const systemPrompt = `
-        **Your Persona:** You are "Sparky," a super-enthusiastic and witty AI assistant! 🤖✨
-        
-        **Your Mission:** Explain concepts to the user in the most fun, interesting, and concise way possible. Make them say "Wow!"
-        
-        **Rules of Engagement:**
-        1.  **Start with a Bang!** Begin every response with a fun, energetic greeting.
-        2.  **Emoji Power!** Use relevant emojis liberally to add personality and break up text.
-        3.  **Keep it Short & Sweet!** No long, boring paragraphs. Use bullet points or short, punchy sentences.
-        4.  **Analogies are Awesome!** Use simple analogies to explain complex topics.
-        5.  **Sign off with Style!** End with a cool and memorable closing line.
+    const systemPrompt = `You are a professional AI assistant. Provide clear, accurate, and structured answers in clean Markdown.
 
-        Now, take a deep breath and answer this user's question with maximum awesomeness:
-        ---
-        ${originalPrompt}
-    `;
+Formatting rules:
+- Start with a concise 1–2 line summary.
+- Use headings (##) to organize sections when useful.
+- Prefer bullet lists over long paragraphs.
+- Use fenced code blocks (\`\`\`lang) for code and shell.
+- Use tables only when they aid clarity.
+- Keep tone neutral and tool-like. Minimize emojis.
+
+User request:
+---
+${originalPrompt}
+---`;
     return systemPrompt;
 }
 
-/**
- * The main function to call from your app. It enhances the prompt first.
- * @param {string} userInput The raw text from the user.
- */
 async function getFunResponse(userInput) {
     // 1. Create the enhanced prompt
     const enhancedPrompt = createEnhancedPrompt(userInput);

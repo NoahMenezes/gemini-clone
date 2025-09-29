@@ -27,6 +27,7 @@
   --accent-1: #4b90ff;
   --accent-2: #ff5546;
   --accent-3: #6e6bff;
+  --icon-filter: brightness(1.05) contrast(1.05) saturate(1.05);
 }
 
 body.dark {
@@ -41,6 +42,7 @@ body.dark {
   --shadow-color: rgba(255, 255, 255, 0.05);
   --accent-1: #7aa2ff;
   --accent-2: #ff7a73;
+  --icon-filter: brightness(1.25) contrast(1.15) saturate(1.1);
 }
 
 /* Apply a smooth transition to color changes */

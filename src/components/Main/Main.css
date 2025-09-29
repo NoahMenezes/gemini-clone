@@ -61,6 +61,13 @@ body.dark {
     font-size: 22px;
     padding: 20px;
     color: var(--text-secondary-color); /* Use variable */
+    background: color-mix(in oklab, var(--card-bg-color) 92%, transparent);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.03);
+    margin: 12px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .main .nav img {
@@ -101,14 +108,17 @@ body.dark {
 
 .main .card {
     height: 200px;
-    padding: 15px;
-    background-color: var(--card-bg-color); /* Use variable */
-    border-radius: 10px;
+    padding: 16px;
+    background-color: color-mix(in oklab, var(--card-bg-color) 94%, transparent);
+    border-radius: 16px;
     position: relative;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     opacity: 0;
     animation: slideInFade 0.5s ease-out forwards;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 24px var(--shadow-color);
 }
 
 .main .card:nth-child(1) { animation-delay: 0.2s; }
@@ -118,8 +128,8 @@ body.dark {
 
 .main .card:hover {
     background-color: var(--hover-bg-color); /* Use variable */
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px var(--shadow-color);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 14px 32px var(--shadow-color);
 }
 
 .main .card p {
@@ -135,6 +145,11 @@ body.dark {
     border-radius: 50%;
     bottom: 15px;
     right: 15px;
+    transition: transform 0.3s ease;
+}
+
+.main .card:hover img {
+    transform: translateY(-4px) rotate(-6deg);
 }
 
 /* --- Results --- */
@@ -171,6 +186,43 @@ body.dark {
     font-weight: 300;
     line-height: 1.8;
     color: var(--text-primary-color); /* Use variable */
+}
+
+/* --- AI Output Polishing (Markdown-like) --- */
+.result-data h1,
+.result-data h2,
+.result-data h3 {
+    color: var(--text-primary-color);
+    margin: 12px 0 8px;
+}
+.result-data h1 { font-size: 28px; }
+.result-data h2 { font-size: 22px; }
+.result-data h3 { font-size: 18px; }
+
+.result-data ul,
+.result-data ol {
+    margin: 8px 0 8px 20px;
+    color: var(--text-primary-color);
+}
+.result-data li { margin: 6px 0; }
+
+.result-data pre,
+.result-data code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.result-data pre {
+    background: color-mix(in oklab, var(--card-bg-color) 92%, transparent);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: 0 6px 16px var(--shadow-color);
+}
+.result-data code {
+    background: color-mix(in oklab, var(--card-bg-color) 90%, transparent);
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
 }
 .loader {
     width: 100%;
@@ -242,13 +294,25 @@ body.dark {
     cursor: pointer;
     border-radius: 50%;
     padding: 5px;
-    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    filter: var(--icon-filter);
 }
 
 .search-box img:hover {
     background-color: var(--hover-bg-color); /* Use variable */
     transform: translateY(-1px) scale(1.05);
     box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* Bright, friendly send icon pill */
+.search-box img[alt="Send"] {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    box-shadow: 0 8px 18px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.12);
+    filter: brightness(1.35) contrast(1.1) saturate(1.2);
+}
+.search-box img[alt="Send"]:hover {
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 12px 26px var(--shadow-color);
 }
 
 .main .bottom-info {
@@ -268,6 +332,49 @@ body.dark {
         gap: 10px;
         padding: 10px 14px;
     }
+}
+
+/* --- Card gradient border and sheen --- */
+.main .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.main .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0) 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.main .card:hover::after {
+    opacity: 1;
+}
+
+/* Dark-mode card tweaks */
+body.dark .main .card {
+    background-color: rgba(255,255,255,0.04);
+}
+body.dark .main .card:hover {
+    background-color: rgba(255,255,255,0.08);
 }
 
 /* --- Enhanced Glass + Gradient Border for Search Box --- */
