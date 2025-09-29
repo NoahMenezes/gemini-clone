@@ -14,16 +14,29 @@
     width: 250px;
     display: inline-flex;
     flex-direction: column;
-    justify-content: space-between; /* Pushes bottom items down */
-    background-color: var(--sidebar-bg-color);
+    justify-content: space-between;
+    background: color-mix(in oklab, var(--sidebar-bg-color) 94%, transparent);
     padding: 25px 15px;
-    transition: width 0.3s ease;
-}
-
-/* --- Collapsed State --- */
-.sidebar.collapsed {
+    transition: width 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    position: relative;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.05);
+  }
+  
+  /* Decorative gradient edge */
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0; right: -1px; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  .sidebar.collapsed {
     width: 80px;
-}
+  }
 
 /* --- Sections --- */
 .sidebar .top, .sidebar .bottom {
@@ -44,36 +57,67 @@
 
 /* --- UPDATED Menu Icon --- */
 .sidebar .menu {
-    width: 40px;      /* Increased from 35px */
-    padding: 18px;    /* Increased from 15px */
-    margin-bottom: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    background-color: blue;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    filter: var(--icon-filter);
+  width: 40px;
+  padding: 18px;
+  margin-bottom: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  box-shadow: 0 8px 24px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.08);
+  filter: var(--icon-filter);
 }
 
 .sidebar .menu:hover {
-    background-color: var(--hover-bg-color); /* Stronger hover effect */
-    transform: scale(1.1); /* Makes it slightly larger on hover */
+  background-color: var(--hover-bg-color);
+  transform: translateY(-1px) scale(1.06);
+  box-shadow: 0 12px 28px var(--shadow-color);
 }
 
-
+.sidebar .menu:active {
+  transform: scale(0.98);
+}
 /* --- New Chat Button --- */
 .sidebar .new-chat {
     display: inline-flex;
     align-items: center;
     gap: 15px;
     padding: 12px 15px;
-    background-color: var(--card-bg-color);
+    background: color-mix(in oklab, var(--card-bg-color) 92%, transparent);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 50px;
     font-size: 14px;
     color: var(--text-secondary-color);
     cursor: pointer;
-    transition: background-color 0.2s ease;
-}
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+  
+  .sidebar .new-chat:hover {
+    background-color: var(--hover-bg-color);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px var(--shadow-color);
+  }
+  
+  /* --- Shared styles for all sidebar items --- */
+  .sidebar .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    border-radius: 50px;
+    color: var(--text-primary-color);
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .sidebar .sidebar-item:hover,
+  .sidebar .sidebar-item.active {
+    background-color: var(--hover-bg-color);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px var(--shadow-color);
+  }
 
 /* --- Recent Section --- */
 .sidebar .recent {
@@ -139,7 +183,8 @@
     bottom: 55px;
     left: 15px;
     background-color: #1e1f20;
-    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.06);
     padding: 10px;
     width: 280px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);

@@ -16,7 +16,7 @@ const Sidebar = () => {
         { icon: assets.link_icon, text: 'Your public links' },
         { icon: assets.theme_icon, text: 'Theme' },
         { icon: assets.subscription_icon, text: 'Manage subscription' },
-        { icon: assets.upgrade_icon, text: 'Upgrade to Google AI Ultra' },
+        { icon: assets.upgrade_icon, text: 'Upgrade to Google AI Ultra' }, 
         { icon: assets.feedback_icon, text: 'Send feedback' },
     ];
     

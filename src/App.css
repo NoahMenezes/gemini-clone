@@ -23,30 +23,43 @@
   display: flex;
   width: 100%;
 }
-
 /* Styles for the theme toggle button */
 .theme-toggle-button {
   position: absolute;
   top: 20px;
-  
-  /* --- UPDATE THESE LINES --- */
+
+  /* centered at top */
   left: 50%;
   transform: translateX(-50%);
-  /* --- END OF UPDATE --- */
 
   z-index: 1000;
-  padding: 8px 16px;
-  background-color: blue;
+  padding: 10px 18px;
   color: white;
-  border: none;
-  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
   font-size: 14px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  box-shadow: 0 8px 24px var(--shadow-color), inset 0 0 0 1px rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
 .theme-toggle-button:hover {
-  background-color: #4a4a4a;
+  transform: translateX(-50%) translateY(-1px) scale(1.03);
+  box-shadow: 0 14px 32px var(--shadow-color);
+}
+
+.theme-toggle-button:active {
+  transform: translateX(-50%) translateY(0px) scale(0.98);
+}
+
+/* Dark mode slight tint */
+body.dark .theme-toggle-button {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--accent-1) 85%, #000 15%),
+    color-mix(in oklab, var(--accent-2) 85%, #000 15%)
+  );
 }
